@@ -38,8 +38,41 @@ async function createNewMovie(req, res) {
     }
 };
 
+async function updateMovie(req, res) {
+    const id = new ObjectId(req.params.id)
+    const data = {
+        name: req.body.name,
+        released: req.body.released,
+        rated: req.body.rated,
+        genre: req.body.genre,
+        director: req.body.director,
+        actors: req.body.actors,
+        poster: req.body.poster
+    }
+    const movie = await Movies.replaceOne({ _id: id }, data)
+    if (movie.modifiedCount > 0) {
+        res.status(204).send();
+    } else {
+        res.status(500).json(movie.error);
+        console.log(movie.error);
+    }
+};
+
+async function deleteMovie(req, res) {
+    const id = new ObjectId(req.params.id)
+    const movie = await Movies.deleteOne({ _id: id });
+    if (movie.deletedCount > 0) {
+        res.status(204).send();
+    } else {
+        res.status(500).json(movie.error);
+        console.log(movie.error);
+    };
+};
+
 module.exports = {
     getAllMovies,
     getSingleMovie,
-    createNewMovie
+    createNewMovie,
+    updateMovie,
+    deleteMovie
 };
